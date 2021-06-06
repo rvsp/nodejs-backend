@@ -5,6 +5,7 @@ const listRouteEndPoints = require("express-list-endpoints");
 
 const productRouter = require("./routes/productRoute");
 const userRouter = require("./routes/userRoute");
+const { authenticate } = require("./helpers/authorize");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,44 +16,11 @@ app.use("/api", productRouter);
 app.use("/api", userRouter);
 
 app.get("/", (req, res) => {
-  res.send([
-    {
-      path: "/api/products",
-      methods: ["GET"],
-      middleware: ["anonymous"],
-    },
-    {
-      path: "/api/get-product/:id",
-      methods: ["GET"],
-      middleware: ["anonymous"],
-    },
-    {
-      path: "/api/create-product",
-      methods: ["POST"],
-      middleware: ["anonymous"],
-    },
-    {
-      path: "/api/update-product/:id",
-      methods: ["PUT"],
-      middleware: ["anonymous"],
-    },
-    {
-      path: "/api/delete-product/:id",
-      methods: ["DELETE"],
-      middleware: ["anonymous"],
-    },
-    {
-      path: "/api/user/login",
-      methods: ["POST"],
-      middleware: ["anonymous"],
-    },
-    {
-      path: "/api/user/register",
-      methods: ["POST"],
-      middleware: ["anonymous"],
-    },
-    { path: "/", methods: ["GET"], middleware: ["anonymous"] },
-  ]);
+  res.send("Home route");
+});
+
+app.get("/dashboard", [authenticate], (req, res) => {
+  res.status(200).json({ message: "welcome to dashboard" });
 });
 
 app.listen(port, () => console.log("App runs on ", port));
